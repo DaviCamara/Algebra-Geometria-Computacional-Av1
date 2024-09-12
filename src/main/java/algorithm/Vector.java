@@ -3,9 +3,11 @@ package algorithm;
 public class Vector {
 
     private int vector[];
+    private int dimension;
 
     public Vector(int dim, int[] elements) {
         vector = new int[dim];
+        this.dimension = dim;
 
         for (int i = 0; i < dim; i++) {
             vector[i] = elements[i];
@@ -24,5 +26,11 @@ public class Vector {
 
     }
 
+    public int getDimension() {
+        return dimension;
+    }
 
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
 }
