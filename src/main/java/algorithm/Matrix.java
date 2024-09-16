@@ -17,7 +17,7 @@ public class Matrix {
         //elements.lenght = 8
         //rows x cols = elements.lenght
 
-        if(rows * cols != elements.length) {
+        if (rows * cols != elements.length) {
             throw new Exception("Quantidade de elementos do array diferente da ordem da Matrix");
         }
 
@@ -30,7 +30,7 @@ public class Matrix {
                 //Acessa elementos para preencher a matriz
                 this.matrix[i][j] = elements[ponteiroVetor++];
 
-                System.out.println("element: " + this.matrix[i][j]);
+                // System.out.println("element: " + this.matrix[i][j]);
             }
         }
 
@@ -38,20 +38,31 @@ public class Matrix {
 
     public int get(int row, int col) {
 
-        return this.matrix[row-1][col-1];
+        return this.matrix[row - 1][col - 1];
     }
 
-    public void set(int row,int col, int element) {
-            this.matrix[row-1][col-1] = element;
+    public void set(int row, int col, int element) {
+        this.matrix[row - 1][col - 1] = element;
     }
 
-    public int getColSize(){
+    public int getColSize() {
         return this.cols;
     }
 
-    public int getRowSize(){
+    public int getRowSize() {
         return this.rows;
     }
 
-
+    public void printMatrix() {
+        for (int i = 0; i < rows; i++) {
+            System.out.print("[ ");
+            for (int j = 0; j < cols; j++) {
+                System.out.print(matrix[i][j]);
+                if (j < cols - 1) {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println(" ]");
+        }
+    }
 }

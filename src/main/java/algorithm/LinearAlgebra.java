@@ -27,13 +27,12 @@ public class LinearAlgebra {
         return transposedMatrix;
     }
 
-    public static Vector transpose(Vector vector) {
-
+    public static void transpose(Vector vector) {
+        System.out.println("[");
         for (int i = 0; i < vector.getDimension(); i++) {
-            System.out.println("Elemento transposto:" + vector.get(i));
+            System.out.println(" " + vector.get(i));
         }
-        return vector;
-
+        System.out.println("]");
     }
 
     public static Matrix sum(Matrix matrix1, Matrix matrix2) throws Exception {
@@ -98,78 +97,60 @@ public class LinearAlgebra {
     public static Matrix dot(Matrix matrix1, Matrix matrix2) throws Exception {
         if (matrix1.getColSize() != matrix2.getRowSize()) {
             System.out.println("O número de colunas da primeira matriz deve ser igual ao número de linhas da segunda matriz.");
-        }
+        } else {
 
-        int rowsSizeMAtrix1 = matrix1.getRowSize();
-        int rowSizeMatrix2 = matrix2.getRowSize();
-        int colsSizeMAtrix2 = matrix2.getColSize();
+            int rowsSizeMAtrix1 = matrix1.getRowSize();
+            int rowSizeMatrix2 = matrix2.getRowSize();
+            int colsSizeMAtrix2 = matrix2.getColSize();
 
-        int[] resultElements = new int[rowsSizeMAtrix1 * colsSizeMAtrix2];
-        int pointer = 0;
+            int[] resultElements = new int[rowsSizeMAtrix1 * colsSizeMAtrix2];
+            int pointer = 0;
 
 
-        for (int i = 0; i < rowsSizeMAtrix1; i++) {
-            for (int j = 0; j < colsSizeMAtrix2; j++) {
-                int sum = 0;
-                for (int k = 0; k < rowSizeMatrix2; k++) {
-                    sum += matrix1.get(i + 1, k + 1) * matrix2.get(k + 1, j + 1);
+            for (int i = 0; i < rowsSizeMAtrix1; i++) {
+                for (int j = 0; j < colsSizeMAtrix2; j++) {
+                    int sum = 0;
+                    for (int k = 0; k < rowSizeMatrix2; k++) {
+                        sum += matrix1.get(i + 1, k + 1) * matrix2.get(k + 1, j + 1);
+                    }
+                    resultElements[pointer++] = sum;
                 }
-                resultElements[pointer++] = sum;
             }
+            return new Matrix(rowsSizeMAtrix1, colsSizeMAtrix2, resultElements);
         }
-
-        return new Matrix(rowsSizeMAtrix1, colsSizeMAtrix2, resultElements);
+        return null;
     }
 
-    public void solve(Matrix augmentedMatrix) {
-//        int equacoes = augmentedMatrix.getRowSize();
-//        int variaveis = augmentedMatrix.getColSize();
-//
-//        if (variaveis != equacoes + 1) {
-//            System.out.println("numero de colunas na matrix ampliada  deve ser igual ao numero de linhas + 1");
-//        }
-//
-//        for (int i = 0; i < equacoes; i++) {
-//            // Find the pivot row and swap
-//            int pivot = i;
-//            for (int k = i + 1; k < equacoes; k++) {
-//                if (Math.abs(augmentedMatrix.get(k + 1, i + 1)) > Math.abs(augmentedMatrix.get(pivot + 1, i + 1))) {
-//                    pivot = k;
-//                }
-//            }
-//
-//            // Swap rows
-//            for (int j = 0; j < variaveis; j++) {
-//                int temp = augmentedMatrix.get(i + 1, j + 1);
-//                augmentedMatrix.set(i + 1, j + 1, augmentedMatrix.get(pivot + 1, j + 1));
-//                augmentedMatrix.set(pivot + 1, j + 1, temp);
-//            }
-//
-//            // Make the pivot element 1 and eliminate the column
-//            int pivotElement = augmentedMatrix.get(i + 1, i + 1);
-//            if (pivotElement == 0) {
-//                throw new Exception("The system does not have a unique solution.");
-//            }
-//            for (int j = 0; j < variaveis; j++) {
-//                augmentedMatrix.set(i + 1, j + 1, augmentedMatrix.get(i + 1, j + 1) / pivotElement);
-//            }
-//            for (int k = 0; k < equacoes; k++) {
-//                if (k != i) {
-//                    int factor = augmentedMatrix.get(k + 1, i + 1);
-//                    for (int j = 0; j < variaveis; j++) {
-//                        augmentedMatrix.set(k + 1, j + 1, augmentedMatrix.get(k + 1, j + 1) - factor * augmentedMatrix.get(i + 1, j + 1));
-//                    }
-//                }
-//            }
-//        }
-//
-//        // Extract the solution from the last column
-//        int[] solutions = new int[equacoes];
-//        for (int i = 0; i < equacoes; i++) {
-//            solutions[i] = augmentedMatrix.get(i + 1, equacoes + 1);
-//        }
-//
-//        return new Matrix(equacoes, 1, solutions);
-//    }
+    public static double[] gaussJacobi(Matrix A, double[] b, double[] initialGuess, int maxIterations, double tolerance) throws Exception {
+        int n = A.getRowSize();
+        double[] x = Arrays.copyOf(initialGuess, n);
+        double[] xNew = new double[n];
+
+        for (int iteration = 0; iteration < maxIterations; iteration++) {
+            for (int i = 0; i < n; i++) {
+                double sum = 0;
+                for (int j = 0; j < n; j++) {
+                    if (i != j) {
+                        sum += A.get(i + 1, j + 1) * x[j];
+                    }
+                }
+                xNew[i] = (b[i] - sum) / A.get(i + 1, i + 1);
+            }
+
+            // Check for convergence
+            double maxDifference = 0;
+            for (int i = 0; i < n; i++) {
+                maxDifference = Math.max(maxDifference, Math.abs(xNew[i] - x[i]));
+            }
+
+            if (maxDifference < tolerance) {
+                System.out.println("Converged after " + (iteration + 1) + " iterations.");
+                return xNew;
+            }
+
+            x = Arrays.copyOf(xNew, n);
+        }
+
+        throw new Exception("Gauss-Jacobi method did not converge within the maximum number of iterations.");
     }
 }

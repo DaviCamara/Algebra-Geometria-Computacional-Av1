@@ -11,7 +11,7 @@ public class Vector {
 
         for (int i = 0; i < dim; i++) {
             vector[i] = elements[i];
-            System.out.println("elemento Vetor: " + vector[i]);
+            //System.out.println("elemento Vetor: " + vector[i]);
         }
     }
 
@@ -32,5 +32,16 @@ public class Vector {
 
     public void setDimension(int dimension) {
         this.dimension = dimension;
+    }
+
+    public void printVector() {
+        System.out.print("[ ");
+        for (int i = 0; i < dimension; i++) {
+            System.out.print(vector[i]);
+            if (i < dimension - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println(" ]");
     }
 }
